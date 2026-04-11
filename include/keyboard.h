@@ -1,0 +1,9 @@
+#ifndef H_KEYBOARD
+#define H_KEYBOARD
+
+extern char lower_scancodes[128];
+extern char upper_scancodes[128];
+
+void keyboard_handler();
+
+#endif /* H_KEYBOARD */

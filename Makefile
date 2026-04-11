@@ -7,7 +7,7 @@ LDFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib -lgcc -Wl,--oformat,binary
 BUILD_DIR = build
 SRC_DIR = src
 
-OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/io.o $(BUILD_DIR)/vga.o $(BUILD_DIR)/tty.o $(BUILD_DIR)/cursor.o
+OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/io.o $(BUILD_DIR)/interrupts.o $(BUILD_DIR)/idt.o $(BUILD_DIR)/pic.o $(BUILD_DIR)/vga.o $(BUILD_DIR)/tty.o $(BUILD_DIR)/cursor.o $(BUILD_DIR)/keyboard.o
 OUT_BIN = $(BUILD_DIR)/kernel.bin
 IMG = lanex.img
 
