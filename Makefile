@@ -7,7 +7,7 @@ LDFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib -lgcc -Wl,--oformat,binary
 BUILD_DIR = build
 SRC_DIR = src
 
-OBJS = main.o io.o interrupts.o idt.o pic.o vga.o tty.o cursor.o keyboard.o sh.o messages.o
+OBJS = main.o io.o interrupts.o idt.o pic.o vga.o tty.o cursor.o pit.o keyboard.o sh.o messages.o
 
 OBJ_PATHS = $(addprefix $(BUILD_DIR)/, $(OBJS))
 
@@ -17,12 +17,9 @@ IMG = lanex.img
 
 all: $(IMG)
 
-boot: 
+$(IMG): $(OUT_BIN) 
 	@mkdir -p $(BUILD_DIR)
 	$(NASM) -f bin $(SRC_DIR)/boot.asm -o $(BOOT_BIN)
-
-$(IMG): $(OUT_BIN) $(BOOT_BIN)
-	@mkdir -p $(BUILD_DIR)
 	cat $(BOOT_BIN) $(OUT_BIN) > $(IMG)
 	truncate -s 1440k $(IMG)
 

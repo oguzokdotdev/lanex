@@ -1,7 +1,12 @@
 .section .text
 .align 4
 .global isr_wrapper
+.global keyboard_wrapper
+.global pit_wrapper
 .extern isr_handler
+.extern keyboard_handler
+.extern pit_handler
+
 .macro INTERRUPT_WRAPPER name, target
 .global \name
 \name:
@@ -24,4 +29,4 @@
 
 INTERRUPT_WRAPPER isr_wrapper, isr_handler
 INTERRUPT_WRAPPER keyboard_wrapper, keyboard_handler
-
+INTERRUPT_WRAPPER pit_wrapper, pit_handler

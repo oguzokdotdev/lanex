@@ -4,6 +4,7 @@
 #include "pic.h"
 #include "tty.h"
 #include "keyboard.h"
+#include "pit.h"
 #include "sh.h"
 #include "messages.h"
 
@@ -13,6 +14,7 @@ void kmain() {
   tty_initialize();
   idt_install();
   pic_remap();
+  pit_init(1000);
 
   asm volatile("sti"); /* enabling interrupts */
 

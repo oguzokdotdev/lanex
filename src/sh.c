@@ -1,4 +1,5 @@
 #include "stddef.h"
+#include "pit.h"
 #include "sh.h"
 #include "tty.h"
 #include "keyboard.h"
@@ -6,6 +7,36 @@
 const char prompt[] = "> ";
 char line[MAX_LINE];
 size_t line_pos = 0;
+
+static char num_buf[32];
+char* utoa(unsigned int value, char* str, int base) {
+  char* rc;
+  char* ptr;
+  char* low;
+    
+  rc = ptr = str;
+    
+  if (base < 2 || base > 36) {
+    *str = '\0';
+    return str;
+  }
+    
+  do {
+    *ptr++ = "0123456789abcdef"[value % base];
+    value /= base;
+  } while (value);
+    
+  low = str;
+  ptr--;
+    
+  while (low < ptr) {
+    char tmp = *low;
+    *low++ = *ptr;
+    *ptr-- = tmp;
+  }
+    
+  return rc;
+}
 
 int strcmp(const char *s1, const char *s2) {
   while (*s1 && (*s1 == *s2)) {
@@ -18,7 +49,19 @@ int strcmp(const char *s1, const char *s2) {
 void execute(const char *cmd) {
   if(strcmp(cmd, "clear") == 0) {
     tty_clear();
-  } else {
+  } else if(strcmp(cmd, "uptime") == 0) {
+    uint32_t ticks = pit_get_ticks();
+    tty_writestring("uptime: ");
+    utoa(ticks / 1000, num_buf, 10);
+    tty_writestring(num_buf);
+    tty_writestring(" seconds\n");
+  } else if(strcmp(cmd, "timer") == 0) {
+    uint32_t ticks = pit_get_ticks();
+    tty_writestring("timer: ");
+    utoa(ticks , num_buf, 10);
+    tty_writestring(num_buf);
+    tty_writestring("\n");
+  } else if(line_pos != 0) {
     tty_writestring("sh: Unknown command: ");
     tty_writestring(cmd);
     tty_putchar('\n');
