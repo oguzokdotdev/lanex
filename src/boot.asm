@@ -17,6 +17,14 @@ start:
 
   mov [boot_drive], dl   
 
+  call .wait_for_kbc
+  mov al, 0xd1
+  out 0x64, al
+  call .wait_for_kbc
+  mov al, 0xdf
+  out 0x60, al
+  call .wait_for_kbc
+
   mov ax, 0x1000
   mov es, ax
   xor bx, bx
@@ -39,6 +47,12 @@ start:
 
   ; jump to protected mode code and switch segment
   jmp 0x08:init_pm   
+
+.wait_for_kbc:
+  in al, 0x64
+  test al, 0x2
+  jnz .wait_for_kbc  
+  ret
 
 disk_error:           ; show E if error
   mov ah, 0x0E
