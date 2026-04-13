@@ -2,6 +2,7 @@
 #include "idt.h"
 #include "tty.h"
 #include "keyboard.h"
+#include "messages.h"
 struct idt_entry idt[256];
 struct idt_ptr idtp;
 extern void isr_wrapper();
@@ -26,6 +27,5 @@ void idt_install() {
 }
 
 void isr_handler() {
-  tty_writestring("\n[KERNEL PANIC] CPU Exception!\n");
-  for(;;) asm volatile("cli; hlt");
+  kpanic("CPU Exception");
 }
