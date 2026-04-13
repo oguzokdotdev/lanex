@@ -22,21 +22,47 @@ const char upper_scancodes[128] = {
   0, ' ', 0, 0, 0, 0, 0, 0
 };
 
+#define BUF_SIZE 16
 
 static volatile char last_key = 0;
+static char buf[BUF_SIZE];
+static volatile int head = 0;
+static volatile int tail = 0;
+static volatile int is_shift = 0;
+
 void keyboard_handler() {
   uint8_t status = inb(0x64);
+
   if (status & 0x01) {
     uint8_t scancode = inb(0x60);
+    if (scancode == 0x2A || scancode == 0x36) { 
+      is_shift = 1; 
+      outb(0x20, 0x20); 
+      return; 
+    }
+    if (scancode == 0xAA || scancode == 0xB6) { 
+      is_shift = 0; 
+      outb(0x20, 0x20); 
+      return; 
+    }
     if (!(scancode & 0x80)) {
-      last_key = lower_scancodes[scancode];
+      char c = is_shift ? upper_scancodes[scancode] : 
+        lower_scancodes[scancode];
+      if(c != 0) {
+        int next_head = (head + 1) % BUF_SIZE;
+        if(scancode < sizeof(lower_scancodes) && c) {
+          buf[head] = c;
+          head = next_head;
+        }
+      }
     }
   }
   outb(0x20, 0x20);
 }
 
 char keyboard_get_char() {
-  char c = last_key;
-  last_key = 0;
+  if(head == tail) return 0;
+  char c = buf[tail];
+  tail = (tail + 1) % BUF_SIZE;
   return c;
 }
