@@ -1,4 +1,4 @@
-![Total Lines](https://img.shields.io/endpoint?url=https://codetabs.com/count-loc/api/stats?repo=keldsaya/lanex&label=Total%20Lines&color=blue)
+![Total Lines](726)
 
 # LANEX
 **Lanex** is a monolithic, multiprocessor, minimalistic console-based operating system kernel, built from absolute scratch.
